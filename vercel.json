@@ -1,4 +1,12 @@
 {
-  "builds": [{ "src": "src/server.js", "use": "@now/node" }],
+  "builds": [
+    {
+      "src": "src/server.js",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["src/**/*"]
+      }
+    }
+  ],
   "routes": [{ "src": "(.*)", "dest": "src/server.js" }]
 }
