@@ -3,13 +3,11 @@ const openAIChat = require("./utils/openai");
 
 const router = express.Router();
 
-router.get("/test", async (req, res) => {
+router.get("/callback", async (req, res) => {
   const { messages } = req.body;
 
   if (!messages) {
-    res.status(400).send({
-      error: "Message is required",
-    });
+    res.send({ error: "No messages provided" });
     return;
   }
 
