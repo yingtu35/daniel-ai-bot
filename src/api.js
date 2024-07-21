@@ -1,18 +1,14 @@
 const express = require("express");
 const openAIChat = require("./utils/openai");
 const line = require("@line/bot-sdk");
+const handleEvent = require("./utils/line");
+
+const router = express.Router();
 
 // create LINE SDK config from env variables
 const config = {
   channelSecret: process.env.CHANNEL_SECRET,
 };
-
-// create LINE SDK client
-const client = new line.messagingApi.MessagingApiClient({
-  channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
-});
-
-const router = express.Router();
 
 router.post("/callback", line.middleware(config), (req, res) => {
   Promise.all(req.body.events.map(handleEvent))
@@ -22,25 +18,6 @@ router.post("/callback", line.middleware(config), (req, res) => {
       res.status(500).end();
     });
 });
-
-// event handler
-async function handleEvent(event) {
-  if (event.type !== "message" || event.message.type !== "text") {
-    // ignore non-text-message event
-    return Promise.resolve(null);
-  }
-
-  const response = await openAIChat(event.message.text);
-
-  // create an echoing text message
-  const echo = { type: "text", text: response };
-
-  // use reply API
-  return client.replyMessage({
-    replyToken: event.replyToken,
-    messages: [echo],
-  });
-}
 
 const jsonParser = express.json();
 

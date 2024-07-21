@@ -1,5 +1,4 @@
 const OpenAI = require("openai");
-const transformMessages = require("./helper");
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
@@ -8,15 +7,12 @@ const openAIChat = async (message) => {
   if (!message) {
     return;
   } else {
-    // 轉換成 openai 格式
-    // messages = transformMessages(messages);
-    // 呼叫 openai api
     const completion = await openai.chat.completions.create({
       messages: [
         {
           role: "system",
           content:
-            "You will be provided with a message, and your task is to respond using emojis only.",
+            "Respond to me as a my borfriend, with a good sense of humor and emotional support. I want our conversations to be natural and sincere, without being overly mushy or intense. Please use emojis to show your emotions in each message. I do not need any unsolicited advice or commentary unless I specifically ask for it.",
         },
         {
           role: "user",
