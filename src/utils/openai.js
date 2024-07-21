@@ -17,7 +17,7 @@ const openAIChat = async (messages) => {
       max_tokens: 80,
       temperature: 0.9,
     });
-    return completion.choices[0];
+    return completion.choices[0].message.content;
   }
 };
 
