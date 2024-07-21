@@ -24,7 +24,7 @@ app.use((err, req, res) => {
     console.log(err);
   }
 
-  res.status(status).send({
+  res.send({
     status: status,
     message: err.message,
   });
