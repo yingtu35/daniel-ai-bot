@@ -1,11 +1,47 @@
-const express = require("express");
-const path = require("path");
-
 require("dotenv").config();
 
+const express = require("express");
+const path = require("path");
 const api = require("./api");
+const line = require("@line/bot-sdk");
+
+// create LINE SDK config from env variables
+const config = {
+  channelSecret: process.env.CHANNEL_SECRET,
+};
+
+// create LINE SDK client
+const client = new line.messagingApi.MessagingApiClient({
+  channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
+});
 
 const app = express();
+
+app.post("/callback", line.middleware(config), (req, res) => {
+  Promise.all(req.body.events.map(handleEvent))
+    .then((result) => res.json(result))
+    .catch((err) => {
+      console.error(err);
+      res.status(500).end();
+    });
+});
+
+// event handler
+function handleEvent(event) {
+  if (event.type !== "message" || event.message.type !== "text") {
+    // ignore non-text-message event
+    return Promise.resolve(null);
+  }
+
+  // create an echoing text message
+  const echo = { type: "text", text: event.message.text };
+
+  // use reply API
+  return client.replyMessage({
+    replyToken: event.replyToken,
+    messages: [echo],
+  });
+}
 
 const PORT = 3000;
 
@@ -18,13 +54,7 @@ app.get("*", (req, res) => {
 });
 
 app.use((err, req, res) => {
-  const status = err.status || 500;
-  if (status === 500) {
-    console.log("The server errored when processing a request");
-    console.log(err);
-  }
-
-  res.send({
+  res.status(err.status || 500).send({
     status: status,
     message: err.message,
   });

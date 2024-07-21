@@ -3,7 +3,7 @@ const openAIChat = require("./utils/openai");
 
 const router = express.Router();
 
-router.get("/callback", async (req, res) => {
+router.get("/test", async (req, res) => {
   const { messages } = req.body;
 
   if (!messages) {
