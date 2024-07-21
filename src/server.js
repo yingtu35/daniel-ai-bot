@@ -32,7 +32,7 @@ async function handleEvent(event) {
     return Promise.resolve(null);
   }
 
-  const response = await openAIChat([event.message.text]);
+  const response = await openAIChat(event.message.text);
 
   // create an echoing text message
   const echo = { type: "text", text: response };
