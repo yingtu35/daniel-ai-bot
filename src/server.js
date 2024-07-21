@@ -15,6 +15,7 @@ const client = new line.messagingApi.MessagingApiClient({
 });
 
 const app = express();
+app.use(express.json());
 
 app.post("/callback", line.middleware(config), (req, res) => {
   Promise.all(req.body.events.map(handleEvent))
@@ -43,6 +44,22 @@ async function handleEvent(event) {
     messages: [echo],
   });
 }
+
+app.get("/test", async (req, res) => {
+  const { message } = req.body;
+
+  if (!message) {
+    res.send({ error: "No messages provided" });
+    return;
+  }
+
+  try {
+    const response = await openAIChat(message);
+    res.send(response);
+  } catch (error) {
+    res.status(500).send({ error: error.name });
+  }
+});
 
 app.get("*", (req, res) => {
   res.status(404).json({ error: "Page did not exist" });
