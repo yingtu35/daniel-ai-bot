@@ -15,7 +15,6 @@ const client = new line.messagingApi.MessagingApiClient({
 });
 
 const app = express();
-app.use(express.json());
 
 app.post("/callback", line.middleware(config), (req, res) => {
   Promise.all(req.body.events.map(handleEvent))
@@ -45,7 +44,9 @@ async function handleEvent(event) {
   });
 }
 
-app.get("/test", async (req, res) => {
+const jsonParser = express.json();
+
+app.get("/test", jsonParser, async (req, res) => {
   const { message } = req.body;
 
   if (!message) {
