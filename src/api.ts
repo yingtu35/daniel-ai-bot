@@ -12,12 +12,11 @@ const config = {
 
 router.post('/callback', line.middleware(config), async (req: Request, res: Response) => {
   try {
-    console.log("callback endpoint called");
     const result = await Promise.all(req.body.events.map(handleEvent));
     res.json(result);
   } catch (err) {
     console.error(err);
-    res.status(200).end();
+    res.status(500).end();
   }
 });
 
