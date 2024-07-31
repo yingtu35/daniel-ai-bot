@@ -17,7 +17,7 @@ router.post('/callback', line.middleware(config), async (req: Request, res: Resp
     res.json(result);
   } catch (err) {
     console.error(err);
-    res.status(500).end();
+    res.status(200).end();
   }
 });
 
